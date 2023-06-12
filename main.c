@@ -1,7 +1,7 @@
 /*
     Implementação de um Shell simplificado para a disciplina de Sistemas Operacionais
     Autores: Pedro Henrique Borges - 804071
-             Luís Fernando do Carmo - 
+             Luís Fernando do Carmo Lourenço - 800210
 
     Casos aceitos no Shell:
         a. $ prog - Processo em foreground
