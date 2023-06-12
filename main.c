@@ -20,12 +20,15 @@
 int main() {
     // Foi definido como 100 o tamanho máximo do comando
     char comando[100];
+    signal(SIGCHLD, SIG_IGN);
     
     while(1) {
         printf("$ ");
 
         // Recebe o comando escrito no terminal
-        fgets(comando, 100,  stdin);
+        fgets(comando, 100, stdin);
+
+        comando[strcspn(comando, "\n")] = '\0';
         
         int bg = VerificaBackground(comando);
         pid_t pid = fork();
@@ -38,8 +41,21 @@ int main() {
             // Processo filho
         } else if (pid == 0) {
             
+            char *par;
+            char *args[100];
+            int indice = 0;
+
+            // Separar os parâmetros do comando
+            par = strtok(comando, " ");
+            while (par != NULL) {
+                args[indice++] = par;
+                par = strtok(NULL, " ");
+            }
+            args[indice] = NULL;
+            // No fim, o vetor args vai armazenar os parâmetros em cada índice
+
             // Executar comando com execvp
-            int executou = execvp(comando, NULL);
+            int executou = execvp(args[0], args);
 
             if (executou == -1) {
                 printf("Erro durante a execução do comando\n");
