@@ -27,11 +27,15 @@ int main() {
         // Recebe o comando escrito no terminal
         fgets(comando, 100,  stdin);
         
+        int bg = VerificaBackground(comando);
         pid_t pid = fork();
 
+        // Erro ao criar processo filho
         if (pid < 0) {
             printf("Erro\n");
             exit(1);
+
+            // Processo filho
         } else if (pid == 0) {
             
             // Executar comando com execvp
@@ -42,8 +46,21 @@ int main() {
                 exit(1);
             }
         } else {
-            int status;
-            wait(&status);
+
+            // Se o processo não for em background, o pai deve esperar o processo filho terminar
+            if(!bg) {
+                int status;
+                wait(&status);
+            }
         }
     }
+}
+
+int VerificaBackground(char comando[]) {
+    for(i = 0; i < 100; i++) {
+        if(strcmp(comando[i], "&")) {
+            return 1;
+        }
+    }
+    return 0;
 }
